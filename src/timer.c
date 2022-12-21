@@ -7,7 +7,7 @@ void initTimer6(void) {
 	// CLK = 168MHz/2 = 84 MHz; 84MHz/(2099 + 1) = 40 kHz
 	TIM6->PSC = 2099;
 	// Timer count to 5000
-	TIM6->ARR = 10;
+	TIM6->ARR = 1;
 	TIM6->CNT = 0;
 	TIM6->CCR2 |= (0b010 << 4); // Update event use as a trigger output
 	TIM6->CR1 |= 0x0001; // Counter enable
@@ -19,7 +19,7 @@ void initTimer6(void) {
 }
 
 // Fait flasher la led 4, juste pour tester le timer
-void TIM6_DAC_IRQHandler(void) {
+/*void TIM6_DAC_IRQHandler(void) {
 	static bool ledInit = false;
 	if(!ledInit) {
 		ledInit = true;
@@ -37,4 +37,4 @@ void TIM6_DAC_IRQHandler(void) {
     	i = 0;
     	GPIOD->ODR ^= (0b1 << 12);  // LED 4
     }
-}
+}*/

@@ -6,7 +6,7 @@
 
 struct wave waves[NBUTTON];
 uint8_t indexWaveSelected = 0;
-uint16_t waveSelectValue[4];
+uint16_t waveSelectValue[2];
 
 void initWaves(void) {
 	// From 100 Hz to 4kHz
@@ -32,6 +32,7 @@ void turnUpVolume(uint8_t increment) {
 	if(volume+increment < 100) volume = 100; // Check for overflow
 	else volume += increment;
 	waves[indexWaveSelected].volume = volume;
+	calculteWaveValue();
 }
 
 void turnDownVolume(uint8_t increment) {
@@ -39,6 +40,7 @@ void turnDownVolume(uint8_t increment) {
 	if(volume-increment > volume) volume = 0; // Check for overflow
 	else volume -= increment;
 	waves[indexWaveSelected].volume = volume;
+	calculteWaveValue();
 }
 
 void changePeriod(uint16_t period, uint8_t indexWave) {
@@ -52,12 +54,14 @@ void changePeriod(uint16_t period, uint8_t indexWave) {
 	if(ARR - ARR_roundUp > 524288) ARR_roundUp += 1048576; // 0.5 << 20 = 524288
 	ARR_roundUp >>= 20;
 	waves[indexWave].period = ARR_roundUp;
+	if(indexWave == indexWaveSelected) TIM6->ARR = waves[index].period;
 }
 
 void changeWaveSelected(uint8_t index) {
 	if(index > NBUTTON) return;
 	indexWaveSelected = index;
 	TIM6->ARR = waves[index].period;
+	calculteWaveValue();
 }
 
 void calculteWaveValue(void) {
@@ -85,7 +89,5 @@ void calculteWaveValue(void) {
 		lowValueRoundUp >>= 10;
 	}
 	waveSelectValue[0] = lowValueRoundUp;
-	waveSelectValue[1] = lowValueRoundUp;
 	waveSelectValue[1] = highValueRoundUp;
-	waveSelectValue[2] = highValueRoundUp;
 }
