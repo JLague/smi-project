@@ -1,0 +1,30 @@
+Configuration du codec audio
+
+I2S_INTERRUPT: 
+    - enable l'interruption du SPI3
+
+AUDIO_MAL_MODE_NORMAL:
+    - transfert avec le DMA en mode normal
+    - à la fin du transfert, le DMA se désactive
+
+AUDIO_MAL_MODE_CIRCULAR:
+    - transfert avec le DMA avec un buffer circulaire
+    - devrait être utilisé avec l'interruption à la moitié du transfert pour fill l'autre moitié du buffer
+
+AUDIO_MAL_DMA_IT_TC_EN: interruption du DMA à la fin du transfert
+AUDIO_MAL_DMA_IT_HT_EN: interruption du DMA à la moitié du transfert
+AUDIO_MAL_DMA_IT_TE_EN: interruption du DMA en cas d'erreur
+
+(pas très important)
+EVAL_AUDIO_IRQ_PREPRIO: priorité de l'interruption du DMA
+EVAL_AUDIO_IRQ_SUBRIO: sous-priorité de l'interruption du DMA
+
+USE_DEFAULT_TIMEOUT_CALLBACK: 
+    - utiliser la fonction de timeout par défaut (ne fait rien)
+    - le callback est appelé si un timeout est détecté lors d'une communication
+
+DAC_USE_I2S_DMA:
+    - utiliser le DMA du I2S à la place de celui du DAC
+    - DMA I2S = DMA1, Stream 7, Channel 0
+    - DMA DAC = DMA1, Stream 0, Channel 0
+
