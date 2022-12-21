@@ -11,8 +11,7 @@
 //extern volatile uint8_t headIndex;
 //extern uint8_t tailIndex;
 
-extern uint16_t waveSelectedLowValue;
-extern uint16_t waveSelectedHighValue;
+extern uint16_t waveSelectValue;
 
 
 
@@ -30,8 +29,7 @@ int main(void)
 	uint8_t prev_key;
 	uint8_t key;
 
-	uint16_t square[2] = {waveSelectedLowValue, waveSelectedHighValue};
-	configSrcAddrDMA((uint32_t)square);
+	configSrcAddrDMA((uint32_t)waveSelectValue);
 
 	TIM6->CR1 |= TIM_CR1_CEN;
 

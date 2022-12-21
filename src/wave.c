@@ -6,14 +6,25 @@
 
 struct wave waves[NBUTTON];
 uint8_t indexWaveSelected = 0;
-uint16_t waveSelectedLowValue = 0;
-uint16_t waveSelectedHighValue = 4095;
+uint16_t waveSelectValue[2];
 
 void initWaves(void) {
+	// From 100 Hz to 4kHz
     for(int i = 0; i < NBUTTON; i++) {
     	waves[i].volume = 64;
-    	waves[i].period = i;
     }
+    changePeriod(3822, 0); // Do 261.63 Hz
+    changePeriod(3405, 1); // Re 293.66 Hz
+    changePeriod(3034, 2); // Mi 329.63 Hz
+    changePeriod(2863, 3); // Fa 349.23 Hz
+    changePeriod(2551, 4); // Sol 392.00 Hz
+    changePeriod(2273, 5); // La 440.00 Hz
+    changePeriod(2025, 6); // Si 493.88 Hz
+    changePeriod(1911, 7); // Do 523.25 Hz
+    changePeriod(16667, 8); // Fucking grave 60 Hz
+    changePeriod(100, 9);  // Je saigne des oreilles 10 kHz
+    calculteWaveValue();
+
 }
 
 void turnUpVolume(uint8_t increment) {
@@ -31,13 +42,22 @@ void turnDownVolume(uint8_t increment) {
 }
 
 void changePeriod(uint16_t period, uint8_t indexWave) {
+	// period is in us
 	if(indexWave >= NBUTTON) return;
-	waves[indexWave].period = period;
+	uint32_t ARR = period; // The ARR register of timer 6
+	ARR *= 20972; // (0.04/2) << 20 = 20972
+	uint32_t ARR_roundUp = ARR;
+	ARR_roundUp >>= 20;
+	ARR_roundUp <<= 20;
+	if(ARR - ARR_roundUp > 524288) ARR_roundUp += 1048576; // 0.5 << 20 = 524288
+	ARR_roundUp >>= 20;
+	waves[indexWave].period = ARR_roundUp;
 }
 
 void changeWaveSelected(uint8_t index) {
 	if(index > NBUTTON) return;
 	indexWaveSelected = index;
+	TIM6->ARR = waves[index].period;
 }
 
 void calculteWaveValue(void) {
@@ -64,16 +84,6 @@ void calculteWaveValue(void) {
 		if(lowValue - lowValueRoundUp > 512) lowValueRoundUp += 1024; // 0.5 << 10 = 512
 		lowValueRoundUp >>= 10;
 	}
-	waveSelectedLowValue = lowValueRoundUp;
-	waveSelectedHighValue = highValueRoundUp;
-}
-
-void changeWave(uint8_t val) {
-	if (val == 10) {
-		turnDownVolume(INCREMENT);
-	} else if (val == 11) {
-		turnUpVolume(INCREMENT);
-	} else {
-		changeWaveSelected(val);
-	}
+	waveSelectValue[0] = lowValueRoundUp;
+	waveSelectValue[1] = highValueRoundUp;
 }
