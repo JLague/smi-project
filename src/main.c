@@ -3,23 +3,28 @@
 #include "keyboard.h"
 #include "uart.h"
 #include "dac.h"
+#include "timer.h"
+#include "DMA.h"
 
 //extern volatile uint8_t buffer[];
 //extern volatile uint8_t headIndex;
 //extern uint8_t tailIndex;
 
+const uint16_t square[2] = {0, 4095};
 
 int main(void)
 {
 	// Init
 //	uart_init();
 //	kb_init();
+	initTimer6();
+	initDMA();
 	dac_init();
+	configSrcAddrDMA((uint32_t)square);
+
+	TIM6->CR1 |= TIM_CR1_CEN;
 
 	while (1) {
-		DAC->DHR12R1 |= 0xFFF;
-		DAC->SWTRIGR |= 0x1;
-		for(uint32_t i = 0; i < 1000; ++i);
 	}
 
 //	uint8_t commandIndex = 0;
