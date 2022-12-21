@@ -5,26 +5,45 @@
 #include "dac.h"
 #include "timer.h"
 #include "DMA.h"
+#include "wave.h"
 
 //extern volatile uint8_t buffer[];
 //extern volatile uint8_t headIndex;
 //extern uint8_t tailIndex;
 
-const uint16_t square[2] = {0, 4095};
+extern uint16_t waveSelectedLowValue;
+extern uint16_t waveSelectedHighValue;
+
+
 
 int main(void)
 {
 	// Init
 //	uart_init();
-//	kb_init();
+	kb_init();
+	initWaves();
 	initTimer6();
 	initDMA();
 	dac_init();
+
+	int keys_len = 0;
+	uint8_t prev_key;
+	uint8_t key;
+
+	uint16_t square[2] = {waveSelectedLowValue, waveSelectedHighValue};
 	configSrcAddrDMA((uint32_t)square);
 
 	TIM6->CR1 |= TIM_CR1_CEN;
 
 	while (1) {
+		// Get key presses
+		keys_len = kb_getkeys(prev_key, &key);
+		if (keys_len > 0) {
+			changeWave(key);
+			square[0] = waveSelectedLowValue;
+			square[1] = waveSelectedHighValue;
+			prev_key = key;
+		}
 	}
 
 //	uint8_t commandIndex = 0;

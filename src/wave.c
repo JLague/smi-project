@@ -6,8 +6,8 @@
 
 struct wave waves[NBUTTON];
 uint8_t indexWaveSelected = 0;
-uint16_t waveSelectedLowValue;
-uint16_t waveSelectedHighValue;
+uint16_t waveSelectedLowValue = 0;
+uint16_t waveSelectedHighValue = 4095;
 
 void initWaves(void) {
     for(int i = 0; i < NBUTTON; i++) {
@@ -66,4 +66,14 @@ void calculteWaveValue(void) {
 	}
 	waveSelectedLowValue = lowValueRoundUp;
 	waveSelectedHighValue = highValueRoundUp;
+}
+
+void changeWave(uint8_t val) {
+	if (val == 10) {
+		turnDownVolume(INCREMENT);
+	} else if (val == 11) {
+		turnUpVolume(INCREMENT);
+	} else {
+		changeWaveSelected(val);
+	}
 }

@@ -37,63 +37,18 @@ int kb_init() {
 	return 0;
 }
 
-/*
- * Get key presses
- *
- * prev_keys: previous keys that were pressed
- * prev_state: previous state of the state machine
- * kb_out: pointer to the keys pressed
- * state_out: pointer to the new state of the state machine
- *
- * returns: length of the keys pressed
- */
-int kb_getkeys(unsigned char* prev_keys, unsigned int prev_state, unsigned char** keys_out, unsigned int* state_out) {
-	unsigned int new_state;
-	unsigned int keys_len;
-
-	// Wait for keyboard state to change
-	while ((new_state = _kb_linescan(keys_out)) == prev_state);
-
-	// State machine
-	switch (prev_state) {
-		case -1:
-			if (new_state != 0) { // Only change to state 0
-				new_state = -1;
-			}
-			keys_len = new_state;
-		case 0:
-			// Can go to any state
-			keys_len = new_state;
-			break;
-		case 1:
-			if (new_state == 2) {
-				// If additional key, only register new key
-				// New key is the one that wasn't in previous keys
-				(*keys_out)[0] = prev_keys[0] == (*keys_out)[0] ? (*keys_out)[1] : (*keys_out)[0];
-				keys_len = 1;
-			} else {
-				keys_len = new_state;
-			}
-			break;
-		case 2:
-			// If new state is 1, the only key will be in the kb_out, so
-			// the state machine will still work on the next iteration.
-			// Switch to new state but don't register keys
-			keys_len = new_state == 1 ? 0 : new_state;
-			break;
-	}
-
-	*state_out = new_state;
-	return keys_len;
+int kb_getkeys(uint8_t prev_key, uint8_t *key_out) {
+	int key_len = _kb_linescan(key_out);
+	if (key_len > 1 || prev_key == (*key_out)) return 0;
+	return key_len;
 }
 
 /*
  * Scan keyboard lines for characters
  */
-int _kb_linescan(unsigned char** keys_out) {
+int _kb_linescan(uint8_t *key_out) {
 	int char_count = 0;
-	int counter = 0;
-	int char_codes[2];
+	int char_code;
 
 	// Iterate over keyboard lines
 	for (int i = 0; i < 4; ++i) {
@@ -107,8 +62,8 @@ int _kb_linescan(unsigned char** keys_out) {
 			int nzeros = _kb_nzeros(kb_in);
 			char_count += nzeros;
 
-			// If more than 2 buttons pressed
-			if (char_count > 2) {
+			// If more than 1 buttons pressed
+			if (char_count > 1) {
 				return -1;
 			}
 
@@ -116,7 +71,7 @@ int _kb_linescan(unsigned char** keys_out) {
 			int line_pos = 0;
 			while (nzeros > 0) {
 				if (kb_in % 2 == 0) {
-					char_codes[counter++] = i*3 + line_pos;
+					char_code = i*3 + line_pos;
 					--nzeros;
 				}
 				++line_pos;
@@ -125,10 +80,8 @@ int _kb_linescan(unsigned char** keys_out) {
 		}
 	}
 
-	// Get chars from codes
-	for (int i = 0; i < char_count; ++i) {
-		(*keys_out)[i] = KB_CHARS[char_codes[i]];
-	}
+	if (char_count > 0)
+		(*key_out) = KB_CHARS[char_code];
 
 	return char_count;
 }
