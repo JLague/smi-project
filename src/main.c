@@ -2,36 +2,44 @@
 #include "stm32f4_discovery.h"
 #include "keyboard.h"
 #include "uart.h"
+#include "dac.h"
 
-extern volatile uint8_t buffer[];
-extern volatile uint8_t headIndex;
-extern uint8_t tailIndex;
+//extern volatile uint8_t buffer[];
+//extern volatile uint8_t headIndex;
+//extern uint8_t tailIndex;
 
 
 int main(void)
 {
 	// Init
-	uart_init();
-	kb_init();
+//	uart_init();
+//	kb_init();
+	dac_init();
 
-	uint8_t commandIndex = 0;
-	uint8_t command[3];
-
-	/* Infinite loop */
 	while (1) {
-		// Fill command if we received data
-		while(tailIndex != headIndex && commandIndex < 3) {
-			// Dequeue
-			command[commandIndex++] = buffer[tailIndex++];
-			if(tailIndex >= 20) tailIndex = 0;
-		}
-
-		// Command array is filled, execute command
-		if(commandIndex >= 3) {
-			commandIndex = 0;
-			cmd_exec(command[0], command[1], command[2]);
-		}
+		DAC->DHR12R1 |= 0xFFF;
+		DAC->SWTRIGR |= 0x1;
+		for(uint32_t i = 0; i < 1000; ++i);
 	}
+
+//	uint8_t commandIndex = 0;
+//	uint8_t command[3];
+//
+//	/* Infinite loop */
+//	while (1) {
+//		// Fill command if we received data
+//		while(tailIndex != headIndex && commandIndex < 3) {
+//			// Dequeue
+//			command[commandIndex++] = buffer[tailIndex++];
+//			if(tailIndex >= 20) tailIndex = 0;
+//		}
+//
+//		// Command array is filled, execute command
+//		if(commandIndex >= 3) {
+//			commandIndex = 0;
+//			cmd_exec(command[0], command[1], command[2]);
+//		}
+//	}
 }
 
 
