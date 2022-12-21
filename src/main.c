@@ -37,9 +37,7 @@ int main(void)
 		// Get key presses
 		keys_len = kb_getkeys(prev_key, &key);
 		if (keys_len > 0) {
-			changeWave(key);
-			square[0] = waveSelectedLowValue;
-			square[1] = waveSelectedHighValue;
+			changeWaveSelected(key);
 			prev_key = key;
 		}
 	}

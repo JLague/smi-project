@@ -6,7 +6,7 @@
 
 struct wave waves[NBUTTON];
 uint8_t indexWaveSelected = 0;
-uint16_t waveSelectValue[2];
+uint16_t waveSelectValue[4];
 
 void initWaves(void) {
 	// From 100 Hz to 4kHz
@@ -85,5 +85,7 @@ void calculteWaveValue(void) {
 		lowValueRoundUp >>= 10;
 	}
 	waveSelectValue[0] = lowValueRoundUp;
+	waveSelectValue[1] = lowValueRoundUp;
 	waveSelectValue[1] = highValueRoundUp;
+	waveSelectValue[2] = highValueRoundUp;
 }
