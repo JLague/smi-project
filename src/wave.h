@@ -1,14 +1,14 @@
 /*
  * wave.h
  *
- *  Created on: 21 d�c. 2022
- *      Author: Jean-F�lix
+ *  Created on: 21 d c. 2022
+ *      Author: Jean-F lix
  */
 
 #ifndef WAVE_H_
 #define WAVE_H_
 
-#define INCREMENT 1
+#define INCREMENT 10
 #define NBUTTON 10
 
 struct wave {
@@ -23,5 +23,8 @@ void changePeriod(uint16_t period, uint8_t indexWave);
 void changeWaveSelected(uint8_t index);
 void calculteWaveValue(void);
 void changeWave(uint8_t val);
+void setVolumeAll(uint8_t volume);
+void setVolume(uint8_t volume);
 
 #endif /* WAVE_H_ */
+
