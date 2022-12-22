@@ -1,9 +1,9 @@
 #include "stm32f4xx.h"
 #include "uart.h"
 
-volatile unsigned char buffer[20];
-unsigned char headIndex = 0;
-volatile unsigned char tailIndex = 0;
+volatile uint8_t buffer[20];
+volatile uint8_t headIndex = 0;
+volatile uint8_t tailIndex = 0;
 
 void uart_init()
 {
@@ -21,10 +21,10 @@ void uart_init()
 	// UART
 	RCC->APB2ENR |= 0x00000010; // Enable USART1 clock
 	NVIC->ISER[1] |= 0x0020; // Enable USART1 global interrupt
-	USART1->BRR = 0x0578; /* USARTDIV = SystemCoreClock / (2 * 19200 * 16) = 87.5
-							USARTDIV = DIV_Mantissa + DIV_Fraction/16
-							DIV_Mantissa = 87 (decimal) = 0x057
-							DIV_Fraction = 8 (decimal) = 0x8 */
+	USART1->BRR = 0x1117; /* USARTDIV = SystemCoreClock / (2 * 19200 * 16) = 273.4375
+							USARTDIV = DIV_Mantissa + DIV_Fraction/16 273 7
+							DIV_Mantissa = 273 (decimal) = 0x111
+							DIV_Fraction = 7 (decimal) = 0x7 */
 	USART1->CR1 |= 0x2424; /* Enable USART, parity control enabled, 8-bit words
 							  RXNE interrupt enable, receiver enable */
 	USART1->CR1 &= ~0xDBDB; // Even parity, transmitter disabled

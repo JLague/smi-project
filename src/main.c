@@ -1,13 +1,14 @@
 #include "stm32f4xx.h"
-#include "stm32f4_discovery.h"
+
 #include "keyboard.h"
 #include "uart.h"
 #include "dac.h"
 #include "timer.h"
 #include "DMA.h"
 #include "wave.h"
+#include "cmd.h"
 
-extern volatile uint8_t buffer[];
+extern volatile uint8_t buffer[20];
 extern volatile uint8_t headIndex;
 extern uint8_t tailIndex;
 
@@ -16,7 +17,7 @@ extern uint16_t waveSelectValue[2];
 int main(void)
 {
 	// Init
-//	uart_init();
+	uart_init();
 	kb_init();
 	initWaves();
 	initTimer6();
@@ -26,6 +27,9 @@ int main(void)
 	int keys_len = 0;
 	uint8_t prev_key;
 	uint8_t key;
+
+	uint8_t cmdIndex = 0;
+	uint8_t cmd[4];
 
 	configSrcAddrDMA((uint32_t)waveSelectValue);
 
@@ -38,26 +42,21 @@ int main(void)
 			changeWave(key);
 		}
 		prev_key = key;
-	}
 
-//	uint8_t commandIndex = 0;
-//	uint8_t command[3];
-//
-//	/* Infinite loop */
-//	while (1) {
-//		// Fill command if we received data
-//		while(tailIndex != headIndex && commandIndex < 3) {
-//			// Dequeue
-//			command[commandIndex++] = buffer[tailIndex++];
-//			if(tailIndex >= 20) tailIndex = 0;
-//		}
-//
-//		// Command array is filled, execute command
-//		if(commandIndex >= 3) {
-//			commandIndex = 0;
-//			cmd_exec(command[0], command[1], command[2]);
-//		}
-//	}
+		// Get command
+		// Fill command if we received data
+		while(tailIndex != headIndex && cmdIndex < CMD_LEN) {
+			// Dequeue
+			cmd[cmdIndex++] = buffer[tailIndex++];
+			if(tailIndex >= 20) tailIndex = 0;
+		}
+
+		// Command array is filled, execute command
+		if(cmdIndex >= CMD_LEN) {
+			cmdIndex = 0;
+			cmd_exec(cmd);
+		}
+	}
 }
 
 

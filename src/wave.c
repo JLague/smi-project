@@ -13,14 +13,14 @@ void initWaves(void) {
     for(int i = 0; i < NBUTTON; i++) {
     	waves[i].volume = 50;
     }
-    changePeriod(3822, 0); // Do 261.63 Hz
-    changePeriod(3405, 1); // Re 293.66 Hz
-    changePeriod(3034, 2); // Mi 329.63 Hz
-    changePeriod(2863, 3); // Fa 349.23 Hz
-    changePeriod(2551, 4); // Sol 392.00 Hz
-    changePeriod(2273, 5); // La 440.00 Hz
-    changePeriod(2025, 6); // Si 493.88 Hz
-    changePeriod(1911, 7); // Do 523.25 Hz
+    changePeriod(3822, 0);
+    changePeriod(3405, 1);
+    changePeriod(3034, 2);
+    changePeriod(2863, 3);
+    changePeriod(2551, 4);
+    changePeriod(2273, 5);
+    changePeriod(2025, 6);
+    changePeriod(1911, 7);
     changePeriod(16667, 8); // Fucking grave 60 Hz
     changePeriod(100, 9);  // Je saigne des oreilles 10 kHz
     calculteWaveValue();
@@ -98,7 +98,7 @@ void calculteWaveValue(void) {
 }
 
 void setVolumeAll(uint8_t volume) {
-    for(int i = 0; i < NBUTON; i++) {
+    for(int i = 0; i < NBUTTON; i++) {
     	waves[i].volume = volume;
     }
     calculteWaveValue();
