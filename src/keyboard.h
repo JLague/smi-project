@@ -3,7 +3,7 @@
 
 #define KB_MASK_OUT	0b1111
 #define KB_MASK_IN	0b111
-#define KB_LOOP_DELAY	1000
+#define KB_LOOP_DELAY	100
 
 static const unsigned char KB_CHARS[12] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 0, 11};
 

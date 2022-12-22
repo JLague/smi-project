@@ -7,13 +7,11 @@
 #include "DMA.h"
 #include "wave.h"
 
-//extern volatile uint8_t buffer[];
-//extern volatile uint8_t headIndex;
-//extern uint8_t tailIndex;
+extern volatile uint8_t buffer[];
+extern volatile uint8_t headIndex;
+extern uint8_t tailIndex;
 
-extern uint16_t waveSelectValue;
-
-
+extern uint16_t waveSelectValue[2];
 
 int main(void)
 {
@@ -37,9 +35,9 @@ int main(void)
 		// Get key presses
 		keys_len = kb_getkeys(prev_key, &key);
 		if (keys_len > 0) {
-			changeWaveSelected(key);
-			prev_key = key;
+			changeWave(key);
 		}
+		prev_key = key;
 	}
 
 //	uint8_t commandIndex = 0;

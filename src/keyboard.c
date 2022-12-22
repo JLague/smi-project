@@ -80,9 +80,11 @@ int _kb_linescan(uint8_t *key_out) {
 		}
 	}
 
+	uint8_t temp = -1;
 	if (char_count > 0)
-		(*key_out) = KB_CHARS[char_code];
+		 temp = KB_CHARS[char_code];
 
+	(*key_out) = temp;
 	return char_count;
 }
 

@@ -8,7 +8,7 @@
 #ifndef WAVE_H_
 #define WAVE_H_
 
-#define INCREMENT 10
+#define INCREMENT 1
 #define NBUTTON 10
 
 struct wave {

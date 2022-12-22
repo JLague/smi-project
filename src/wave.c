@@ -11,7 +11,7 @@ uint16_t waveSelectValue[2];
 void initWaves(void) {
 	// From 100 Hz to 4kHz
     for(int i = 0; i < NBUTTON; i++) {
-    	waves[i].volume = 64;
+    	waves[i].volume = 90;
     }
     changePeriod(3822, 0); // Do 261.63 Hz
     changePeriod(3405, 1); // Re 293.66 Hz
@@ -29,7 +29,7 @@ void initWaves(void) {
 
 void turnUpVolume(uint8_t increment) {
 	uint16_t volume = waves[indexWaveSelected].volume;
-	if(volume+increment < 100) volume = 100; // Check for overflow
+	if(volume+increment > 100) volume = 100; // Check for overflow
 	else volume += increment;
 	waves[indexWaveSelected].volume = volume;
 	calculteWaveValue();
@@ -54,7 +54,7 @@ void changePeriod(uint16_t period, uint8_t indexWave) {
 	if(ARR - ARR_roundUp > 524288) ARR_roundUp += 1048576; // 0.5 << 20 = 524288
 	ARR_roundUp >>= 20;
 	waves[indexWave].period = ARR_roundUp;
-	if(indexWave == indexWaveSelected) TIM6->ARR = waves[index].period;
+	if(indexWave == indexWaveSelected) TIM6->ARR = waves[indexWaveSelected].period;
 }
 
 void changeWaveSelected(uint8_t index) {
@@ -90,4 +90,10 @@ void calculteWaveValue(void) {
 	}
 	waveSelectValue[0] = lowValueRoundUp;
 	waveSelectValue[1] = highValueRoundUp;
+}
+
+void changeWave(uint8_t val) {
+	if (val == 10) turnDownVolume(INCREMENT);
+	else if (val == 11) turnUpVolume(INCREMENT);
+	else changeWaveSelected(val);
 }
