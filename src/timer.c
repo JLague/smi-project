@@ -11,7 +11,6 @@ void initTimer6(void) {
 	TIM6->CNT = 0;
 	TIM6->CCR2 |= (0b010 << 4); // Update event use as a trigger output
 	TIM6->CR1 |= 0x0001; // Counter enable
-//	TIM6->DIER |= 0x0101; // interrupt and DMA request enable
 
 	TIM6->CR2 |= TIM_CR2_MMS_1;
 }
