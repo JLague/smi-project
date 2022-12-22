@@ -14,6 +14,4 @@ void initTimer6(void) {
 //	TIM6->DIER |= 0x0101; // interrupt and DMA request enable
 
 	TIM6->CR2 |= TIM_CR2_MMS_1;
-
-	NVIC->ISER[1] |= (0x00400000);
 }
